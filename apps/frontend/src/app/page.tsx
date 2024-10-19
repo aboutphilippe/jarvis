@@ -1,9 +1,10 @@
-import { Button, Stack } from '@mantine/core';
+import { Stack } from '@mantine/core';
+import StartButton from '@/components/StartButton';
 
 export default function Home() {
   return (
     <Stack p="md" align="center">
-      <Button>Start Conversation</Button>
+      <StartButton />
     </Stack>
   );
 }
