@@ -3,7 +3,6 @@
 import { Button, Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 import { ConversationView } from './ConversationView';
-import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 
 type ConversationState =
   | {
@@ -18,7 +17,7 @@ type ConversationState =
     }
   | {
       name: 'STARTED';
-      callObject: DailyCall;
+      url: string;
     }
   | {
       name: 'ENDED';
@@ -33,10 +32,7 @@ async function startConversation() {
   }
   const data = await response.json();
   const { conversationUrl } = Object(data);
-
-  const callObject = DailyIframe.createCallObject();
-  callObject.join({ url: conversationUrl });
-  return callObject;
+  return String(conversationUrl);
 }
 
 function HomePageContent() {
@@ -55,8 +51,8 @@ function HomePageContent() {
         onClick={async () => {
           setConversationState({ name: 'STARTING' });
           try {
-            const callObject = await startConversation();
-            setConversationState({ name: 'STARTED', callObject });
+            const url = await startConversation();
+            setConversationState({ name: 'STARTED', url });
           } catch (error) {
             setConversationState({
               name: 'ERROR_STARTING_CONVERSATION',
@@ -70,7 +66,7 @@ function HomePageContent() {
     );
   }
 
-  return <ConversationView callObject={conversationState.callObject} />;
+  return <ConversationView url={conversationState.url} />;
 }
 
 export function HomePage() {

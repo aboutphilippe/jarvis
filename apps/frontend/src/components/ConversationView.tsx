@@ -1,38 +1,35 @@
 import { Stack } from '@mantine/core';
-import { DailyCall } from '@daily-co/daily-js';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useLocalSessionId, useVideoTrack } from '@daily-co/daily-react';
+import { DailyProvider } from '@/providers/DailyProvider';
 
-export function ConversationView(props: { callObject: DailyCall }) {
-  const { callObject } = props;
-  const [meetingState, setMeetingState] = useState<'joining' | 'joined'>(
-    'joining',
-  );
-  const stackRef = useRef<HTMLDivElement>(null);
+export function ConversationViewContent() {
+  const localVideoElement = useRef<HTMLVideoElement>(null);
 
-  console.log({ callObject });
+  const sessionId = useLocalSessionId();
+  const videoTrack = useVideoTrack(sessionId);
 
-  const iframe = callObject.iframe();
+  const { persistentTrack } = videoTrack;
 
   useEffect(() => {
-    const onJoined = () => {
-      setMeetingState('joined');
-    };
-    callObject.on('joined-meeting', onJoined);
-    return () => {
-      callObject.off('joined-meeting', onJoined);
-    };
-  }, [callObject]);
-
-  useEffect(() => {
-    const containerEl = stackRef.current;
-    console.log({ meetingState, iframe });
-    if (containerEl && iframe) {
-      containerEl.appendChild(iframe);
-      return () => {
-        containerEl.removeChild(iframe);
-      };
+    const el = localVideoElement.current;
+    if (!persistentTrack || !el) {
+      return;
     }
-  }, [iframe, meetingState]);
+    el.srcObject = persistentTrack && new MediaStream([persistentTrack]);
+  }, [persistentTrack]);
 
-  return <Stack ref={stackRef} />;
+  return (
+    <Stack align="center">
+      <video autoPlay muted playsInline ref={localVideoElement} />
+    </Stack>
+  );
+}
+
+export function ConversationView(props: { url: string }) {
+  return (
+    <DailyProvider url={props.url}>
+      <ConversationViewContent />
+    </DailyProvider>
+  );
 }
