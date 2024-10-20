@@ -13,7 +13,7 @@ export async function assistantWorkflow() {
       llm: {
         model: "proxy",
         api_key: "test",
-        base_url: "https://670d-136-25-28-117.ngrok-free.app",
+        base_url: "https://4163-32-132-92-198.ngrok-free.app",
       },
       vqa: {
         enable_vision: true,
