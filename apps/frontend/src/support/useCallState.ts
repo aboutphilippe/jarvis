@@ -1,4 +1,8 @@
-import { DailyMeetingState as CallState, DailyEvent } from '@daily-co/daily-js';
+import {
+  DailyMeetingState as CallState,
+  DailyEvent,
+  DailyEventObjectAppMessage,
+} from '@daily-co/daily-js';
 import { useDaily } from '@daily-co/daily-react';
 import { useEffect, useState } from 'react';
 import { getParticipantList } from './getParticipantList';
@@ -39,6 +43,10 @@ export function useCallState() {
       setParticipants(getParticipantList(callObject));
     };
 
+    const onAppMessage = (event: DailyEventObjectAppMessage) => {
+      console.log('app-message', event.data);
+    };
+
     for (const event of callStateEvents) {
       callObject.on(event, onMeetingStateChange);
     }
@@ -47,6 +55,8 @@ export function useCallState() {
       callObject.on(event, onParticipantChange);
     }
 
+    callObject.on('app-message', onAppMessage);
+
     return () => {
       for (const event of callStateEvents) {
         callObject.off(event, onMeetingStateChange);
@@ -54,6 +64,7 @@ export function useCallState() {
       for (const event of participantStateEvents) {
         callObject.off(event, onParticipantChange);
       }
+      callObject.off('app-message', onAppMessage);
     };
   }, [callObject]);
 
