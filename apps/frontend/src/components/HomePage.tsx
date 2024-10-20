@@ -3,24 +3,31 @@
 import { Button, Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 
-export default function StartButton() {
-  const [serverMessage, setServerMessage] = useState<string | null>(null);
+type ConversationData = {
+  conversationId: string;
+};
+
+export function HomePage() {
+  const [conversationData, setConversationData] =
+    useState<ConversationData | null>(null);
 
   return (
-    <Stack gap="md">
+    <Stack p="md" gap="md" align="center">
       <Button
         onClick={async () => {
           const res = await fetch('/api/create-conversation', {
             method: 'POST',
           });
           const data = await res.json();
-          setServerMessage(data);
+          setConversationData(data);
         }}
       >
         Start Conversation
       </Button>
 
-      {serverMessage ? <Text>{JSON.stringify(serverMessage)}</Text> : null}
+      {conversationData ? (
+        <Text>{JSON.stringify(conversationData)}</Text>
+      ) : null}
     </Stack>
   );
 }
