@@ -1,5 +1,5 @@
 import { Stack } from '@mantine/core';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDaily } from '@daily-co/daily-react';
 import { DailyCall } from '@daily-co/daily-js';
 import { DailyProvider } from '@/providers/DailyProvider';
@@ -28,6 +28,15 @@ export function ConversationViewContent() {
   const callObject = useDaily();
 
   const [audioTrack, videoTrack] = getRemoteStream(callObject);
+  console.log({ audioTrack, videoTrack });
+
+  // TODO: Replace this with an actual state change listener
+  const [_count, setCount] = useState(0);
+  useEffect(() => {
+    setInterval(() => {
+      setCount((count) => count + 1);
+    }, 500);
+  }, []);
 
   useEffect(() => {
     const videoEl = videoElRef.current;
