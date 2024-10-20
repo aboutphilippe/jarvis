@@ -1,4 +1,3 @@
-import { Stack } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 import { useDaily } from '@daily-co/daily-react';
 import { DailyCall } from '@daily-co/daily-js';
@@ -40,14 +39,12 @@ export function ConversationViewContent() {
   }, [audioTrack, videoTrack]);
 
   return (
-    <Stack align="center">
-      <video
-        style={{ maxWidth: '400px' }}
-        autoPlay
-        playsInline
-        ref={videoElRef}
-      />
-    </Stack>
+    <video
+      style={{ maxHeight: '100vh' }}
+      autoPlay
+      playsInline
+      ref={videoElRef}
+    />
   );
 }
 
