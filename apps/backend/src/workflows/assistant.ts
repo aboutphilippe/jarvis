@@ -10,6 +10,11 @@ export async function assistantWorkflow() {
     default_replica_id: replicaId,
     system_prompt: "You are a helpful assistant named JARVIS.",
     layers: {
+      llm: {
+        model: "proxy",
+        api_key: "test",
+        base_url: "https://b48d-136-25-28-117.ngrok-free.app",
+      },
       vqa: {
         enable_vision: true,
       },

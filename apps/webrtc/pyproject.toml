@@ -1,13 +1,11 @@
 # Project metadata
 [tool.poetry]
-name = "get-started"
+name = "daily"
 version = "0.0.1"
-description = "A simple example to get started with the restack-ai SDK"
-authors = [
-    "Restack Team <service@restack.io>",
-]
+description = ""
 readme = "README.md"
 packages = [{include = "src"}]
+authors = []
 
 [tool.poetry.dependencies]
 python = "^3.8"
