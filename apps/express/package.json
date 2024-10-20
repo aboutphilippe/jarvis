@@ -3,9 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "start.watch": "nodemon src/server.ts",
+    "dev": "pnpm start.watch",
     "ngrok": "ngrok http 8080",
     "type-check": "tsc --noEmit"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "ts": "tsx"
+    },
+    "ext": "ts",
+    "watch": [
+      "src"
+    ]
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",
@@ -18,6 +28,7 @@
     "@types/express": "5.0.0",
     "@types/node": "20.11.20",
     "tsx": "4.7.1",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "nodemon": "^2.0.22"
   }
 }

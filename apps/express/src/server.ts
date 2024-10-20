@@ -50,7 +50,7 @@ app.post("/chat/completions", async (req: Request, res: Response) => {
   });
 
   // Stream result to response
-  result.pipeDataStreamToResponse(res, { data });
+  result.pipeDataStreamToResponse(res, { data, sendUsage: true });
 
   data.append("call completed");
   data.close();
