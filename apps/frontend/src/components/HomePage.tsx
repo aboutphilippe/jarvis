@@ -3,31 +3,75 @@
 import { Button, Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 
-type ConversationData = {
-  conversationId: string;
-};
+type ConversationState =
+  | {
+      name: 'IDLE';
+    }
+  | {
+      name: 'STARTING';
+    }
+  | {
+      name: 'ERROR_STARTING_CONVERSATION';
+      error: string;
+    }
+  | {
+      name: 'STARTED';
+      conversationId: string;
+    }
+  | {
+      name: 'ENDED';
+    };
 
-export function HomePage() {
-  const [conversationData, setConversationData] =
-    useState<ConversationData | null>(null);
+async function startConversation() {
+  const response = await fetch('/api/create-conversation', {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    throw new Error(`Unexpected response status ${response.status}`);
+  }
+  const data = await response.json();
+  const { conversationId } = Object(data);
+  return String(conversationId);
+}
 
-  return (
-    <Stack p="md" gap="md" align="center">
+function HomePageContent() {
+  const [conversationState, setConversationState] = useState<ConversationState>(
+    { name: 'IDLE' },
+  );
+
+  if (conversationState.name === 'ERROR_STARTING_CONVERSATION') {
+    return <Text>Error starting conversation: {conversationState.error}</Text>;
+  }
+
+  if (conversationState.name !== 'STARTED') {
+    return (
       <Button
+        loading={conversationState.name === 'STARTING'}
         onClick={async () => {
-          const res = await fetch('/api/create-conversation', {
-            method: 'POST',
-          });
-          const data = await res.json();
-          setConversationData(data);
+          setConversationState({ name: 'STARTING' });
+          try {
+            const conversationId = await startConversation();
+            setConversationState({ name: 'STARTED', conversationId });
+          } catch (error) {
+            setConversationState({
+              name: 'ERROR_STARTING_CONVERSATION',
+              error: String(error),
+            });
+          }
         }}
       >
         Start Conversation
       </Button>
+    );
+  }
 
-      {conversationData ? (
-        <Text>{JSON.stringify(conversationData)}</Text>
-      ) : null}
+  return <Text>Conversation ID {conversationState.conversationId}</Text>;
+}
+
+export function HomePage() {
+  return (
+    <Stack p="md" gap="md" align="center">
+      <HomePageContent />
     </Stack>
   );
 }
