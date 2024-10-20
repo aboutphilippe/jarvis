@@ -35,44 +35,46 @@ async function startConversation() {
   return String(conversationUrl);
 }
 
-function HomePageContent() {
+export function HomePage() {
   const [conversationState, setConversationState] = useState<ConversationState>(
     { name: 'IDLE' },
   );
 
   if (conversationState.name === 'ERROR_STARTING_CONVERSATION') {
-    return <Text>Error starting conversation: {conversationState.error}</Text>;
+    return (
+      <Stack p="md" align="center">
+        <Text>Error starting conversation: {conversationState.error}</Text>
+      </Stack>
+    );
   }
 
   if (conversationState.name !== 'STARTED') {
     return (
-      <Button
-        loading={conversationState.name === 'STARTING'}
-        onClick={async () => {
-          setConversationState({ name: 'STARTING' });
-          try {
-            const url = await startConversation();
-            setConversationState({ name: 'STARTED', url });
-          } catch (error) {
-            setConversationState({
-              name: 'ERROR_STARTING_CONVERSATION',
-              error: String(error),
-            });
-          }
-        }}
-      >
-        Start Conversation
-      </Button>
+      <Stack p="md" align="center">
+        <Button
+          loading={conversationState.name === 'STARTING'}
+          onClick={async () => {
+            setConversationState({ name: 'STARTING' });
+            try {
+              const url = await startConversation();
+              setConversationState({ name: 'STARTED', url });
+            } catch (error) {
+              setConversationState({
+                name: 'ERROR_STARTING_CONVERSATION',
+                error: String(error),
+              });
+            }
+          }}
+        >
+          Start Conversation
+        </Button>
+      </Stack>
     );
   }
 
-  return <ConversationView url={conversationState.url} />;
-}
-
-export function HomePage() {
   return (
-    <Stack p="md" gap="md" align="center">
-      <HomePageContent />
+    <Stack align="center">
+      <ConversationView url={conversationState.url} />
     </Stack>
   );
 }
