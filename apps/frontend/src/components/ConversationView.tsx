@@ -4,19 +4,22 @@ import { useDaily } from '@daily-co/daily-react';
 import { DailyCall } from '@daily-co/daily-js';
 import { DailyProvider } from '@/providers/DailyProvider';
 
-function getFirstNonLocalVideoTrack(callObject: DailyCall | null) {
+function getRemoteStream(
+  callObject: DailyCall | null,
+): [MediaStreamTrack | undefined, MediaStreamTrack | undefined] {
   const participants = callObject?.participants();
-  if (!participants) {
-    return;
-  }
-  for (const [id, participant] of Object.entries(participants)) {
-    if (id !== 'local') {
-      const videoTrack = participant.tracks.video.persistentTrack;
-      if (videoTrack) {
-        return videoTrack;
+  if (participants) {
+    for (const [id, participant] of Object.entries(participants)) {
+      if (id !== 'local') {
+        const audioTrack = participant.tracks.audio.persistentTrack;
+        const videoTrack = participant.tracks.video.persistentTrack;
+        if (audioTrack && videoTrack) {
+          return [audioTrack, videoTrack] as const;
+        }
       }
     }
   }
+  return [undefined, undefined];
 }
 
 export function ConversationViewContent() {
@@ -24,19 +27,18 @@ export function ConversationViewContent() {
 
   const callObject = useDaily();
 
-  const videoTrack = getFirstNonLocalVideoTrack(callObject);
-  console.log({ videoTrack });
+  const [audioTrack, videoTrack] = getRemoteStream(callObject);
 
   useEffect(() => {
     const videoEl = videoElRef.current;
-    if (videoEl && videoTrack) {
-      videoEl.srcObject = new MediaStream([videoTrack]);
+    if (videoEl && audioTrack && videoTrack) {
+      videoEl.srcObject = new MediaStream([audioTrack, videoTrack]);
     }
-  }, [videoTrack]);
+  }, [audioTrack, videoTrack]);
 
   return (
     <Stack align="center">
-      <video autoPlay muted playsInline ref={videoElRef} />
+      <video autoPlay playsInline ref={videoElRef} />
     </Stack>
   );
 }
