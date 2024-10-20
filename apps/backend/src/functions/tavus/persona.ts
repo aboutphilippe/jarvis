@@ -3,6 +3,7 @@ import { log } from "@restackio/ai/function";
 interface PersonaInput {
   apiKey?: string;
   default_replica_id: string;
+  system_prompt: string;
   layers?: {
     llm?: {
       model: string;

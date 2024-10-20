@@ -7,6 +7,7 @@ async function services() {
     await Promise.all([
       // Start service with current workflows and functions
       client.startService({
+        taskQueue: "tavus",
         workflowsPath,
         functions: { createTavusPersona, createTavusConversation },
       }),

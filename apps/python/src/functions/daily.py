@@ -11,19 +11,36 @@ async def daily_message(input: Dict[str, Any]) -> str:
 
         future = asyncio.get_running_loop().create_future()
 
+        call_client.set_user_name("restack")
         call_client.send_app_message({
           "message_type": "conversation",
           "event_type": "conversation.echo",
           "conversation_id": input.get("conversation_id"),
           "properties": {
-              "text": "Hey Philippe, sorry to interrupt, you have a Docusign that is urgent."
+              "text": input.get("message")
           }
-        }, completion=lambda f: future.set_result(None))
+        }, completion=lambda f: future.set_result(f))
 
+        log.info("Waiting for future to complete...")
         await future
+        log.info("Future completed.")
 
-        # call_client.leave()
+        # Add logging and error handling
+        try:
+            log.info("Attempting to leave the room.")
+            call_client.leave()
+            log.info("Successfully left the room.")
+        except Exception as e:
+            log.error(f"Error leaving the room: {e}")
+
+        try:
+            log.info("Attempting to release resources.")
+            call_client.release()
+            log.info("Successfully released resources.")
+        except Exception as e:
+            log.error(f"Error releasing resources: {e}")
+
         return "joined room and sent message"
     except Exception as e:
-        print(f"Error joining room: {e}")
-        raise
+        log.error(f"Error joining room: {e}")
+        return e

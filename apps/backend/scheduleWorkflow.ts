@@ -4,6 +4,7 @@ async function scheduleWorkflow() {
   try {
     const workflowId = `${Date.now()}-assistantWorkflow`;
     const runId = await client.scheduleWorkflow({
+      taskQueue: "tavus",
       workflowName: "assistantWorkflow",
       workflowId,
     });
