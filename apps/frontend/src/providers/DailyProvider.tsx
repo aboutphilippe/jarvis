@@ -6,7 +6,10 @@ function Provider(props: { url: string; children: React.ReactNode }) {
   const callObject = useCallObject({});
 
   useEffect(() => {
-    callObject?.join({ url });
+    callObject?.join({
+      url,
+      startVideoOff: true,
+    });
   }, [callObject, url]);
 
   if (!callObject) {
