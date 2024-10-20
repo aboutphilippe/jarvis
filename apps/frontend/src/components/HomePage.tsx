@@ -2,6 +2,8 @@
 
 import { Button, Stack, Text } from '@mantine/core';
 import { useState } from 'react';
+import { ConversationView } from './ConversationView';
+import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 
 type ConversationState =
   | {
@@ -16,7 +18,7 @@ type ConversationState =
     }
   | {
       name: 'STARTED';
-      conversationId: string;
+      callObject: DailyCall;
     }
   | {
       name: 'ENDED';
@@ -30,8 +32,11 @@ async function startConversation() {
     throw new Error(`Unexpected response status ${response.status}`);
   }
   const data = await response.json();
-  const { conversationId } = Object(data);
-  return String(conversationId);
+  const { conversationUrl } = Object(data);
+
+  const callObject = DailyIframe.createCallObject();
+  callObject.join({ url: conversationUrl });
+  return callObject;
 }
 
 function HomePageContent() {
@@ -50,8 +55,8 @@ function HomePageContent() {
         onClick={async () => {
           setConversationState({ name: 'STARTING' });
           try {
-            const conversationId = await startConversation();
-            setConversationState({ name: 'STARTED', conversationId });
+            const callObject = await startConversation();
+            setConversationState({ name: 'STARTED', callObject });
           } catch (error) {
             setConversationState({
               name: 'ERROR_STARTING_CONVERSATION',
@@ -65,7 +70,7 @@ function HomePageContent() {
     );
   }
 
-  return <Text>Conversation ID {conversationState.conversationId}</Text>;
+  return <ConversationView callObject={conversationState.callObject} />;
 }
 
 export function HomePage() {

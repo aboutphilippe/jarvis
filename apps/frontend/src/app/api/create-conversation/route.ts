@@ -39,6 +39,7 @@ async function createConversation(): Promise<ConversationResponse> {
 
 export async function POST() {
   const data = await createConversation();
-  const conversationId = data.conversation_id;
-  return NextResponse.json({ success: true, conversationId });
+  const { conversation_id: conversationId, conversation_url: conversationUrl } =
+    data;
+  return NextResponse.json({ success: true, conversationId, conversationUrl });
 }

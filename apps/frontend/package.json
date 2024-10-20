@@ -10,6 +10,8 @@
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.72.1",
+    "@daily-co/daily-react": "^0.21.2",
     "@mantine/core": "^7.13.3",
     "@mantine/dates": "^7.13.3",
     "@mantine/form": "^7.13.3",
@@ -18,6 +20,7 @@
     "@mantine/notifications": "^7.13.3",
     "@restackio/ai": "^0.0.75",
     "dayjs": "^1.11.13",
+    "jotai": "^2.10.1",
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18"
