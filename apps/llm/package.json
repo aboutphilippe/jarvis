@@ -1,0 +1,9 @@
+{
+  "name": "jarvis-llm",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "dev": "poetry run llm",
+    "ngrok": "ngrok http 1337"
+  }
+}

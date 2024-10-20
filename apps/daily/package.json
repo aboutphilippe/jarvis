@@ -1,0 +1,9 @@
+{
+  "name": "jarvis-daily",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "dev": "poetry run services",
+    "schedule": "poetry run schedule"
+  }
+}
